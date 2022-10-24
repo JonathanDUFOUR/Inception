@@ -14,8 +14,6 @@ openssl req \
 -out '/etc/nginx/ssl/inception.crt' \
 -keyout '/etc/nginx/ssl/inception.key'
 
-EXPOSE 443 9000
-
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 CMD ["nginx", "-g", "daemon off;"]

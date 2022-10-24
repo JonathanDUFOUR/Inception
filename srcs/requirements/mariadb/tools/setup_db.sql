@@ -1,8 +1,8 @@
 -- force considering the grant tables
 FLUSH PRIVILEGES;
 
--- delete all users
-DELETE FROM mysql.user;
+-- delete all root users
+DELETE 'root' FROM mysql.user;
 
 -- create new user
 CREATE USER '$WP_DB_USER'@'%' IDENTIFIED BY '$WP_DB_PASSWORD';
