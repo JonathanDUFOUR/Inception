@@ -1,3 +1,126 @@
 version: '3.8'
 
 services:
+
+# ------------------- MARIADB ------------------- #
+
+  mariadb:
+
+    image: mariadb:inception
+
+    container_name: mariadb
+
+    build:
+      context: ./requirements/mariadb
+
+    volumes:
+      - mariadb:/var/lib/mysql:rw
+
+    env_file:
+      - .env
+
+    expose:
+      - 3306
+
+    networks:
+      - inception_network
+
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 21
+      start_period: 5s
+
+# ------------------ WORDPRESS ------------------ #
+
+  wordpress:
+
+    image: wordpress:inception
+
+    container_name: wordpress
+
+    build:
+      context: ./requirements/wordpress
+
+    volumes:
+      - wordpress:/var/www/wordpress:rw
+
+    env_file:
+      - .env
+
+    expose:
+      - 9000
+
+    networks:
+      - inception_network
+
+    restart: always
+
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "cgi-fcgi", "-connect", "localhost:9000", "/status"]
+      interval: 5s
+      timeout: 2s
+      retries: 21
+      start_period: 5s
+
+# -------------------- NGINX -------------------- #
+
+  nginx:
+
+    image: nginx:inception
+
+    container_name: nginx
+
+    build:
+      context: ./requirements/nginx
+
+    volumes:
+      - wordpress:/var/www/wordpress:rw
+
+    networks:
+      - inception_network
+
+    ports:
+      - 443:443
+
+    restart: always
+
+    depends_on:
+      wordpress:
+        condition: service_healthy
+
+# ------------------- NETWORKS ------------------- #
+
+networks:
+
+  inception_network:
+
+    name: inception_network
+    driver: bridge
+
+# ------------------- VOLUMES ------------------- #
+
+volumes:
+
+  wordpress:
+
+    driver: local
+
+    driver_opts:
+      type: volume
+      device: $HOME/data/vol_wordpress
+      o: bind
+
+  mariadb:
+
+    driver: local
+
+    driver_opts:
+      type: volume
+      device: $HOME/data/vol_mariadb
+      o: bind

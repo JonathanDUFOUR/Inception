@@ -17,9 +17,6 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 	sed -i 's/$basedir\/lib\/\*\/mariadb19/$basedir\/lib\*\/mariadb/g' $(which mariadb-install-db)
 
 	mariadb-install-db
-	export WP_DB_NAME=wordpress
-	export WP_DB_USER=wordpress
-	export WP_DB_PASSWORD=wordpressPassword
 	envsubst < tmp/setup_db.sql | mariadbd --bootstrap
 fi
 
