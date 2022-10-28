@@ -12,6 +12,10 @@ services:
 
     build:
       context: ./requirements/mariadb
+      args:
+        - UNIX_UID=$UNIX_UID
+        - UNIX_GID=$UNIX_GID
+        - MARIADB_VOLUME_LOCATION=$MARIADB_VOLUME_LOCATION
 
     volumes:
       - mariadb:/var/lib/mysql:rw
@@ -32,6 +36,8 @@ services:
       retries: 21
       start_period: 5s
 
+    restart: unless-stopped
+
 # ------------------ WORDPRESS ------------------ #
 
   wordpress:
@@ -42,6 +48,10 @@ services:
 
     build:
       context: ./requirements/wordpress
+      args:
+        - UNIX_UID=$UNIX_UID
+        - UNIX_GID=$UNIX_GID
+        - WP_VOLUME_LOCATION=$WP_VOLUME_LOCATION
 
     volumes:
       - wordpress:/var/www/wordpress:rw
@@ -55,8 +65,6 @@ services:
     networks:
       - inception_network
 
-    restart: always
-
     depends_on:
       mariadb:
         condition: service_healthy
@@ -68,6 +76,8 @@ services:
       retries: 21
       start_period: 5s
 
+    restart: unless-stopped
+
 # -------------------- NGINX -------------------- #
 
   nginx:
@@ -78,9 +88,16 @@ services:
 
     build:
       context: ./requirements/nginx
+      args:
+        - UNIX_UID=$UNIX_UID
+        - UNIX_GID=$UNIX_GID
+        - NGINX_VOLUME_LOCATION=$NGINX_VOLUME_LOCATION
 
     volumes:
       - wordpress:/var/www/wordpress:rw
+
+    env_file:
+      - .env
 
     networks:
       - inception_network
@@ -88,11 +105,11 @@ services:
     ports:
       - 443:443
 
-    restart: always
-
     depends_on:
       wordpress:
         condition: service_healthy
+
+    restart: unless-stopped
 
 # ------------------- NETWORKS ------------------- #
 

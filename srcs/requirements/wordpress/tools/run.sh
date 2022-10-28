@@ -2,6 +2,8 @@
 
 set -x -e
 
+ls -ld /var/www/wordpress
+
 # Step 0
 # Check if wp-cli is already downloaded, and if not, download it.
 if [ -z $(ls -A /var/www/wordpress) ]; then
@@ -29,7 +31,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 
 	# Step 1.3
 	# Create a regular user.
-	wp user create $WP_REGULAR_USER $WP_REGULAR_EMAIL --user_pass=$WP_REGULAR_PASSWORD
+	wp user create $WP_REGULAR_USER $WP_REGULAR_EMAIL --user_pass=$WP_REGULAR_PASSWORD --role=author
 fi
 
 # Step 2
