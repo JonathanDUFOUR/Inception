@@ -30,7 +30,7 @@ services:
       - inception_network
 
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping"]
+      test: ["CMD", "mariadb-admin", "ping", "--host=localhost"]
       start_period: 1m
       interval: 5s
       timeout: 2s
