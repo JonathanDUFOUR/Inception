@@ -31,10 +31,10 @@ services:
 
     healthcheck:
       test: ["CMD", "mariadb-admin", "ping"]
+      start_period: 5s
       interval: 5s
       timeout: 2s
       retries: 21
-      start_period: 5s
 
     restart: unless-stopped
 
@@ -71,10 +71,10 @@ services:
 
     healthcheck:
       test: ["CMD", "cgi-fcgi", "-connect", "localhost:9000", "/"]
+      start_period: 5s
       interval: 5s
       timeout: 2s
       retries: 21
-      start_period: 5s
 
     restart: unless-stopped
 
