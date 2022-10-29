@@ -2,11 +2,9 @@
 
 set -x -e
 
-ls -ld /var/www/wordpress
-
 # Step 0
 # Check if wp-cli is already downloaded, and if not, download it.
-if [ -z $(ls -A /var/www/wordpress) ]; then
+if [ -z "$(ls -A /var/www/wordpress)" ]; then
 
 	# Step 0.0
 	# Download the wordpress-cli core files.
