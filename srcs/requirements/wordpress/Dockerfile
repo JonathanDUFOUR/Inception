@@ -25,7 +25,7 @@ chmod +x /usr/local/bin/wp && \
 php8_location=$(which php8) && \
 ln -s $php8_location $(dirname $php8_location)/php && \
 groupmod --gid $UNIX_GID www-data && \
-useradd --gid $UNIX_GID --system --uid $UNIX_UID --no-user-group www-data && \
+useradd --home-dir /home/www-data --gid $UNIX_GID --create-home --no-user-group --system --uid $UNIX_UID www-data && \
 chown --recursive www-data:www-data $WP_VOLUME_LOCATION /var/log/php8 && \
 chmod -R 755 $WP_VOLUME_LOCATION
 

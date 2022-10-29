@@ -14,7 +14,6 @@
 #              COMMANDS              #
 ######################################
 COMPOSE			=	docker compose --project-directory ${BASE_DIR}
-COMPOSE_CMDS	=	up down build
 SUDO			=	sudo --user=inception
 MKDIR			=	mkdir -p
 RM				=	rm -rf
@@ -32,19 +31,24 @@ VOL_DIR			=	${addprefix ${DATA_DIR}/,	\
 #######################################
 #                RULES                #
 #######################################
-.PHONY: all clean fclean re fre ${COMPOSE_CMDS} clear_volumes
+.PHONY: build create start stop up down ps all clean fclean re fre
 
-all:
+up: build create start
 
-${COMPOSE_CMDS}:
-	${COMPOSE} ${@}
+build create start stop down:
+	${COMPOSE} $@
 
-clear_volumes:
+ps:
+	${COMPOSE} $@ -a
+
+all: up
+
+clean:
+	${COMPOSE} down --rmi all
+
+fclean:
+	${COMPOSE} down --rmi all --volumes
 	${SUDO} ${RM} ${addsuffix /*, ${VOL_DIR}}
-
-clean: down
-
-fclean: down clear_volumes
 
 re: clean all
 
